@@ -1,0 +1,74 @@
+[
+  {
+    "id": "PROD-1781497014579",
+    "name": "Premium Sofa set",
+    "price": 120000,
+    "imagePath": "/uploads/1781497014576.jpg",
+    "category": "Furniture",
+    "description": "Upgrade your living space with this elegant and comfortable sofa set, designed to blend style with everyday functionality. Crafted with a sturdy frame and premium upholstery, it offers lasting durability and support. The plush cushions provide exceptional comfort for relaxing, entertaining guests, or spending time with family. Its modern design complements a variety of interior styles,"
+  },
+  {
+    "id": "PROD-1781497096618",
+    "name": "Air conditioner",
+    "price": 45000,
+    "imagePath": "/uploads/1781497096615.jpg",
+    "category": "Air Conditioner",
+    "description": "Stay cool and comfortable year-round with this high-performance air conditioner, designed for efficient and reliable cooling. Featuring advanced technology, it delivers fast temperature control while helping reduce energy consumption."
+  },
+  {
+    "id": "PROD-1781497182905",
+    "name": "Living room combo",
+    "price": 50000,
+    "imagePath": "/uploads/1781497182903.webp",
+    "category": "Refrigerator",
+    "description": "One premium two seat sofa set,one table and bookshelf."
+  },
+  {
+    "id": "PROD-1781497308374",
+    "name": "Wooden Almira",
+    "price": 40000,
+    "imagePath": "/uploads/1781497308372.jpg",
+    "category": "Furniture",
+    "description": "consumption. Its quiet operation ensures a peaceful environment for your home or office. Built for durability and convenience, this AC offers reliable performance, easy controls, and enhanced comfort for everyday use. Ideal for creating a refreshing indoor atmosphere even during the hottest days."
+  },
+  {
+    "id": "PROD-1781497366951",
+    "name": "Washing machine",
+    "price": 45000,
+    "imagePath": "/uploads/1781497366948.jpg",
+    "category": "Washing Machine",
+    "description": "Make laundry easier with this efficient and reliable washing machine, designed to deliver powerful cleaning performance while protecting your fabrics. Featuring multiple wash programs and user-friendly controls, it handles a variety of clothing types with ease."
+  },
+  {
+    "id": "PROD-1781497443557",
+    "name": "Induction",
+    "price": 3500,
+    "imagePath": "/uploads/1781497443555.jpg",
+    "category": "General",
+    "description": "Cook faster and more efficiently with this modern induction cooker, designed for convenience and precision. Using advanced induction technology, it provides rapid heating while consuming less energy than traditional cooking methods. Multiple power and temperature settings allow you to prepare a wide variety of dishes with ease. Its compact design,"
+  },
+  {
+    "id": "PROD-1781497475690",
+    "name": "Iron machine",
+    "price": 5000,
+    "imagePath": "/uploads/1781497475688.jpg",
+    "category": "Iron",
+    "description": "Cook faster and more efficiently with this modern induction cooker, designed for convenience and precision. Using advanced induction technology, it provides rapid heating while consuming less energy than traditional cooking methods. Multiple power and temperature settings allow you to prepare a wide variety of dishes with ease. Its compact design,"
+  },
+  {
+    "id": "PROD-1781497616121",
+    "name": "Premium Wooden Bed",
+    "price": 80000,
+    "imagePath": "/uploads/1781497616115.jpg",
+    "category": "Furniture",
+    "description": "Cook faster and more efficiently with this modern induction cooker, designed for convenience and precision. Using advanced induction technology, it provides rapid heating while consuming less energy than traditional cooking methods. Multiple power and temperature settings allow you to prepare a wide variety of dishes with ease. Its compact design,"
+  },
+  {
+    "id": "Product-1781972696588",
+    "name": "sofa",
+    "price": 1200000,
+    "imagePath": "/uploads/1781972696585.webp",
+    "category": "Furniture",
+    "description": "aascdsdgsdfhfhgffgn"
+  }
+]

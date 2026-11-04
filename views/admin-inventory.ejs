@@ -1,0 +1,105 @@
+<%- include('partials/header') %>
+
+<style>
+    .admin-inventory-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+        gap: 22px;
+    }
+    @media (min-width: 992px) {
+        .admin-inventory-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    .admin-card {
+        position: relative;
+        background: var(--bg-card);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        border: 1px solid var(--border);
+        transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s cubic-bezier(0.4,0,0.2,1);
+        box-shadow: var(--shadow-sm);
+    }
+    .admin-card:hover {
+        transform: translateY(-6px) scale(1.02);
+        box-shadow: var(--shadow-xl);
+    }
+</style>
+
+<div class="full-page-container" style="max-width: 1400px; margin: 0 auto; padding: 24px; background: linear-gradient(180deg, #f8fafc, var(--bg-page));">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <div>
+            <h2 style="margin: 0; border: none; padding: 0; font-size: 1.5rem; letter-spacing: -0.5px;">Inventory Management</h2>
+            <p style="color: var(--text-secondary); font-size: 0.88rem; margin-top: 4px;">Add, edit, and remove products from your store</p>
+        </div>
+        <a href="/" style="background: var(--accent); color: white; padding: 10px 20px; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 700; transition: all var(--transition);" onmouseover="this.style.background='var(--accent-hover)'" onmouseout="this.style.background='var(--accent)'">View Store &rarr;</a>
+    </div>
+
+    <!-- Add New Product -->
+    <div class="admin-block" style="margin-bottom: 40px; background: var(--border-light); border: 1px solid var(--border);">
+        <h3 style="margin: 0 0 16px 0; color: var(--text-primary); font-size: 1rem; font-weight: 800; letter-spacing: -0.3px;">Add New Product</h3>
+        <form action="/product/create" method="POST" enctype="multipart/form-data" class="inline-form">
+            <input type="text" name="newProductName" placeholder="Product Name" required>
+            <input type="number" name="newProductPrice" step="0.01" placeholder="Price (BDT)" required>
+            <select name="newProductCategory" style="padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); min-width: 150px; font-size: 0.88rem; font-family: inherit;">
+                <option value="Refrigerator">Refrigerator</option>
+                <option value="Microwave">Microwave</option>
+                <option value="Washing Machine">Washing Machine</option>
+                <option value="Blender">Blender</option>
+                <option value="Furniture">Furniture</option>
+                <option value="Oven">Oven</option>
+                <option value="Rice Cooker">Rice Cooker</option>
+                <option value="Iron">Iron</option>
+                <option value="Air Conditioner">Air Conditioner</option>
+                <option value="Vacuum Cleaner">Vacuum Cleaner</option>
+                <option value="Toaster">Toaster</option>
+                <option value="Fan">Fan</option>
+                <option value="Water Purifier">Water Purifier</option>
+                <option value="General">Other</option>
+            </select>
+            <input type="file" name="newProductImage" accept="image/*" required>
+            <textarea name="newProductDescription" placeholder="Product description (features, warranty, specs...)" rows="2" style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 0.88rem; font-family: inherit; resize: vertical; flex-basis: 100%;"></textarea>
+            <button type="submit" class="btn-add" style="width: auto; padding: 10px 28px; background: linear-gradient(135deg, var(--accent), var(--accent-hover)); min-width: auto; border-radius: var(--radius-sm);">Save Product</button>
+        </form>
+    </div>
+
+    <h3 style="color: var(--text-primary); margin-bottom: 20px; font-weight: 800; letter-spacing: -0.3px;">Products (<%= products.length %>)</h3>
+
+    <% if (products.length === 0) { %>
+        <div style="text-align: center; padding: 60px; color: var(--text-muted); background: var(--bg-card); border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <div style="font-size: 3rem; margin-bottom: 12px; opacity: 0.4;">&#128230;</div>
+            <p style="font-weight: 600; color: var(--text-secondary);">No products yet. Add your first product above!</p>
+        </div>
+    <% } else { %>
+        <div class="admin-inventory-grid">
+            <% products.forEach(function(product) { %>
+                <div class="admin-card">
+                    <form action="/product/delete" method="POST" onsubmit="return confirm('Delete this product?');" style="position: absolute; top: 10px; right: 10px; z-index: 10;">
+                        <input type="hidden" name="productId" value="<%= product.id %>">
+                        <button type="submit" style="background: var(--danger); color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-md);">&#10005;</button>
+                    </form>
+                    <img src="<%= product.imagePath %>" alt="<%= product.name %>" style="height: 170px; width: 100%; object-fit: cover;">
+                    <div style="padding: 16px;">
+                        <% if (product.category) { %><div class="card-category"><%= product.category %></div><% } %>
+                        <strong style="font-size: 0.9rem; color: var(--text-primary); display: block; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="<%= product.name %>"><%= product.name %></strong>
+                        <div class="price" style="margin: 0 0 12px 0; font-size: 1.1rem;">BDT <%= product.price.toFixed(2) %></div>
+                        <details style="text-align: left; font-size: 0.82rem; border-top: 1px dashed var(--border); padding-top: 10px;">
+                            <summary style="cursor: pointer; color: var(--text-secondary); text-align: center; font-weight: 700; outline: none;">&#9998; Edit</summary>
+                            <form action="/product/update" method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+                                <input type="hidden" name="productId" value="<%= product.id %>">
+                                <input type="text" name="updateProductName" value="<%= product.name %>" style="width: 100%; padding: 7px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.8rem; box-sizing: border-box; font-family: inherit;" required>
+                                <input type="number" name="updateProductPrice" step="0.01" value="<%= product.price %>" style="width: 100%; padding: 7px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.8rem; box-sizing: border-box; font-family: inherit;" required>
+                                <select name="updateProductCategory" style="width: 100%; padding: 7px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.8rem; font-family: inherit;">
+                                    <option value="Refrigerator" <%= product.category === 'Refrigerator' ? 'selected' : '' %>>Refrigerator</option><option value="Microwave" <%= product.category === 'Microwave' ? 'selected' : '' %>>Microwave</option><option value="Washing Machine" <%= product.category === 'Washing Machine' ? 'selected' : '' %>>Washing Machine</option><option value="Blender" <%= product.category === 'Blender' ? 'selected' : '' %>>Blender</option><option value="Oven" <%= product.category === 'Oven' ? 'selected' : '' %>>Oven</option><option value="Rice Cooker" <%= product.category === 'Rice Cooker' ? 'selected' : '' %>>Rice Cooker</option><option value="Iron" <%= product.category === 'Iron' ? 'selected' : '' %>>Iron</option><option value="Air Conditioner" <%= product.category === 'Air Conditioner' ? 'selected' : '' %>>Air Conditioner</option><option value="Vacuum Cleaner" <%= product.category === 'Vacuum Cleaner' ? 'selected' : '' %>>Vacuum Cleaner</option><option value="Toaster" <%= product.category === 'Toaster' ? 'selected' : '' %>>Toaster</option><option value="General" <%= product.category === 'General' ? 'selected' : '' %>>Other</option>
+                                </select>
+                                <input type="file" name="updateProductImage" accept="image/*" style="font-size: 0.75rem; width: 100%;">
+                                <textarea name="updateProductDescription" placeholder="Product description" rows="2" style="width: 100%; padding: 7px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.8rem; box-sizing: border-box; font-family: inherit; resize: vertical;"><%= product.description || '' %></textarea>
+                                <button type="submit" class="btn-add" style="background: var(--primary-light); font-size: 0.8rem; padding: 8px;">Update</button>
+                            </form>
+                        </details>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    <% } %>
+</div>
+
+<%- include('partials/footer') %>

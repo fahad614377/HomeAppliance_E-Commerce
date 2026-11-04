@@ -1,0 +1,260 @@
+<%- include('partials/header') %>
+
+<style>
+    @keyframes scaleHeart {
+        from { transform: scale(1); }
+        to { transform: scale(1.1); }
+    }
+   
+    .payment-option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        border: 2px solid var(--border);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: all var(--transition);
+        margin-bottom: 8px;
+    }
+    .payment-option:hover { border-color: var(--accent); background: #eff6ff; }
+    .payment-option input[type="radio"] { accent-color: var(--accent); width: 18px; height: 18px; }
+    .payment-option.selected { border-color: var(--accent); background: #eff6ff; }
+    .payment-label { flex: 1; }
+    .payment-label strong { display: block; font-size: 0.9rem; color: var(--text-primary); }
+    .payment-label small { color: var(--text-secondary); font-size: 0.78rem; }
+
+
+    .cart-page-card {
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .cart-page-card:hover {
+        transform: translateY(-5px) scale(1.03);
+        box-shadow: 0 16px 35px rgba(0,0,0,0.1);
+    }
+</style>
+
+<div id="mainAppView">
+    <div class="app-container">
+      
+        <div class="catalog-container" style="flex: 2; padding: 28px; overflow-y: auto; background: linear-gradient(180deg, #f8fafc, #eef2f7);">
+            <h2 style="font-size: 1.3rem; letter-spacing: -0.5px;">Browse More Products</h2>
+            <div class="product-grid">
+                <% products.forEach(function(product) { %>
+                    <div class="card cart-page-card">
+                        <img src="<%= product.imagePath %>" alt="<%= product.name %>">
+                        <div class="card-body">
+                            <% if (product.category) { %>
+                                <div class="card-category"><%= product.category %></div>
+                            <% } %>
+                            <strong style="min-height: 40px; display: block; font-size: 0.9rem;"><%= product.name %></strong>
+                            <div class="price">BDT. <%= product.price.toFixed(2) %></div>
+                            <form action="/cart/add" method="POST">
+                                <input type="hidden" name="productId" value="<%= product.id %>">
+                                <button type="submit" class="btn-add">Add to Cart</button>
+                            </form>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+
+
+        <div class="sidebar-cart">
+            <h2 style="font-size: 1.15rem;">Your Shopping Cart</h2>
+            <div class="cart-items">
+                <% if (typeof cart === 'undefined' || !cart || cart.length === 0) { %>
+                    <div style="text-align: center; padding: 50px 0; color: var(--text-muted);">
+                        <div style="font-size: 2.8rem; margin-bottom: 12px; opacity: 0.4;">&#128722;</div>
+                        <p style="font-weight: 600; color: var(--text-secondary);">Your cart is empty.</p>
+                        <p style="font-size: 0.85rem;">Add products from the left!</p>
+                    </div>
+                <% } else { %>
+                    <% cart.forEach(function(item) { %>
+                        <div class="cart-item">
+                            <img src="<%= item.imagePath %>" alt="<%= item.name %>">
+                            <div class="cart-details">
+                                <div style="font-size: 0.85rem; font-weight: 700; max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><%= item.name %></div>
+                                <div style="color: var(--text-muted); font-size: 0.8rem;">BDT <%= item.price.toFixed(2) %> &times; <%= item.quantity %></div>
+                            </div>
+                            <div class="cart-controls">
+                                <form action="/cart/remove" method="POST" style="margin: 0;">
+                                    <input type="hidden" name="productId" value="<%= item.id %>">
+                                    <button type="submit" class="btn-mini">-</button>
+                                </form>
+                                <span style="min-width: 20px; text-align: center;"><strong><%= item.quantity %></strong></span>
+                                <form action="/cart/add" method="POST" style="margin: 0;">
+                                    <input type="hidden" name="productId" value="<%= item.id %>">
+                                    <button type="submit" class="btn-mini">+</button>
+                                </form>
+                                <form action="/cart/remove-all" method="POST" style="margin: 0; margin-left: 4px;">
+                                    <input type="hidden" name="productId" value="<%= item.id %>">
+                                    <button type="submit" class="btn-mini" style="background: #fee2e2; color: #dc2626; font-weight: bold; border-color: #fecaca;">&times;</button>
+                                </form>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } %>
+            </div>
+            <div class="checkout-box">
+                <div class="total-row">
+                    <span>Total</span>
+                    <span style="color: var(--accent);">BDT. <%= typeof cartTotal !== 'undefined' ? cartTotal : '0.00' %></span>
+                </div>
+                <% if (typeof cart !== 'undefined' && cart && cart.length > 0) { %>
+                    <form id="checkoutForm" action="/cart/checkout" method="POST" onsubmit="openCheckoutModal(event)">
+                        <input type="hidden" name="customerName" id="hiddenCustomerName">
+                        <input type="hidden" name="customerPhone" id="hiddenCustomerPhone">
+                        <input type="hidden" name="customerAddress" id="hiddenCustomerAddress">
+                        <input type="hidden" name="paymentMethod" id="hiddenPaymentMethod">
+                        <button type="submit" class="btn-checkout">Proceed to Checkout</button>
+                    </form>
+                <% } else { %>
+                    <button class="btn-checkout" style="background: var(--border); color: var(--text-muted); cursor: not-allowed;" disabled>Cart is Empty</button>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="checkoutModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.6); z-index: 9999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(6px);">
+    <div style="background: var(--bg-card); padding: 36px; border-radius: var(--radius-xl); box-shadow: var(--shadow-xl); max-width: 480px; width: 92%; transform: translateY(20px); opacity: 0; transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);" id="modalCard">
+
+      
+        <div id="modal-step-inputs">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px;">
+                <h3 style="margin: 0; color: var(--text-primary); font-size: 1.2rem; font-weight: 800; letter-spacing: -0.3px;">Checkout Details</h3>
+
+                <button onclick="closeCheckoutModal()" style="background: var(--border-light); border: none; color: var(--text-secondary); font-size: 1.2rem; cursor: pointer; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">&times;</button>
+            </div>
+            <div style="margin-bottom: 14px;">
+                <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.8px;">Your Name</label>
+                <input type="text" id="modalInputName" value="<%= (typeof user !== 'undefined' && user && user.fullName) ? user.fullName : '' %>" placeholder="Enter your full name" style="width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 0.9rem; outline: none; box-sizing: border-box; font-family: inherit; transition: border-color var(--transition);" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+            </div>
+            <div style="margin-bottom: 14px;">
+                <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.8px;">Phone Number</label>
+                <input type="tel" id="modalInputPhone" value="<%= (typeof user !== 'undefined' && user && user.phone) ? user.phone : '' %>" placeholder="e.g. 01712345678" style="width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 0.9rem; outline: none; box-sizing: border-box; font-family: inherit; transition: border-color var(--transition);" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+            </div>
+            <div style="margin-bottom: 14px;">
+                <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.8px;">Delivery Address</label>
+                <textarea id="modalInputAddress" rows="2" placeholder="House, Road, Area, City" style="width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 0.9rem; outline: none; box-sizing: border-box; font-family: inherit; resize: none; transition: border-color var(--transition);" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"><%= (typeof user !== 'undefined' && user && user.address) ? user.address : '' %></textarea>
+            </div>
+            <div style="margin-bottom: 18px;">
+                <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.8px;">Payment Method</label>
+                <label class="payment-option selected" id="payopt-cod" onclick="selectPayment('cod')">
+                    <input type="radio" name="paymentSelect" value="Cash on Delivery" checked>
+                    <div class="payment-label"><strong>Cash on Delivery</strong><small>Pay when you receive the product</small></div>
+                </label>
+                <label class="payment-option" id="payopt-online" onclick="selectPayment('online')">
+                    <input type="radio" name="paymentSelect" value="Online Payment">
+                    <div class="payment-label"><strong>Online Payment</strong><small>bKash, Nagad, or Bank Transfer</small></div>
+                </label>
+            </div>
+            <div id="onlinePaymentDetails" style="display: none; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: var(--radius-sm); padding: 14px; margin-bottom: 16px;">
+                <p style="margin: 0 0 6px 0; font-size: 0.82rem; font-weight: 700; color: #065f46;">Send payment to:</p>
+                <p style="margin: 0; font-size: 0.85rem; color: var(--text-primary);"><strong>bKash:</strong> 01700000000 &nbsp; <strong>Nagad:</strong> 01800000000</p>
+                <input type="text" id="transactionId" placeholder="Transaction ID (e.g. TXN12345)" style="width: 100%; padding: 10px; border: 1px solid #a7f3d0; border-radius: 6px; margin-top: 10px; font-size: 0.88rem; box-sizing: border-box; font-family: inherit;">
+            </div>
+            <button onclick="processModalSubmission()" style="background: linear-gradient(135deg, var(--accent), var(--accent-hover)); color: white; border: none; padding: 14px; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.9rem; width: 100%; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: all var(--transition);" onmouseover="this.style.boxShadow='0 6px 20px rgba(59,130,246,0.35)'" onmouseout="this.style.boxShadow='none'">
+                Confirm Order
+            </button>
+        </div>
+
+     
+        <div id="modal-step-success" style="display: none; text-align: center; padding: 10px 0;">
+            <div style="font-size: 3.5rem; margin-bottom: 12px; animation: scaleHeart 0.6s infinite alternate ease-in-out;">&#127881;</div>
+            <h3 style="margin: 0 0 6px 0; color: var(--text-primary); font-size: 1.4rem; font-weight: 800;">Order Placed!</h3>
+            <p style="color: var(--text-secondary); margin: 0 0 10px 0; font-size: 0.9rem;">Thank you, <strong id="resName" style="color: var(--accent);">Customer</strong>!</p>
+            <p style="color: var(--text-muted); margin: 0 0 6px 0; font-size: 0.82rem; background: var(--border-light); padding: 10px; border-radius: var(--radius-sm); border: 1px dashed var(--border);">Delivering to: <span id="resAddress">N/A</span></p>
+            <p style="margin: 0 0 22px 0; font-size: 0.82rem;">Payment: <strong id="resPayment" style="color: var(--accent);">Cash on Delivery</strong></p>
+            <button onclick="dispatchFormToServer()" style="background: linear-gradient(135deg, var(--success), var(--success-hover)); color: white; border: none; padding: 14px; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.9rem; width: 100%; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;">Complete Order</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    var modalWrapper = document.getElementById('checkoutModal');
+    var modalCard = document.getElementById('modalCard');
+
+    function openCheckoutModal(event) {
+        event.preventDefault();
+        document.getElementById('modal-step-inputs').style.display = 'block';
+        document.getElementById('modal-step-success').style.display = 'none';
+        modalWrapper.style.display = 'flex';
+        setTimeout(function() { modalCard.style.transform = 'translateY(0)'; modalCard.style.opacity = '1'; }, 10);
+    }
+    function closeCheckoutModal() {
+        modalCard.style.transform = 'translateY(20px)'; modalCard.style.opacity = '0';
+        setTimeout(function() { modalWrapper.style.display = 'none'; }, 200);
+    }
+    function selectPayment(type) {
+        document.getElementById('payopt-cod').classList.remove('selected');
+        document.getElementById('payopt-online').classList.remove('selected');
+        if (type === 'online') {
+            document.getElementById('payopt-online').classList.add('selected');
+            document.getElementById('onlinePaymentDetails').style.display = 'block';
+        } else {
+            document.getElementById('payopt-cod').classList.add('selected');
+            document.getElementById('onlinePaymentDetails').style.display = 'none';
+        }
+    }
+    function processModalSubmission() {
+        var nameVal = document.getElementById('modalInputName').value.trim();
+        var phoneVal = document.getElementById('modalInputPhone').value.trim();
+        var addressVal = document.getElementById('modalInputAddress').value.trim();
+        if (!nameVal || !phoneVal || !addressVal) { alert('Please fill in all fields.'); return; }
+        var paymentRadios = document.getElementsByName('paymentSelect');
+        var selectedPayment = 'Cash on Delivery';
+        for (var i = 0; i < paymentRadios.length; i++) { if (paymentRadios[i].checked) { selectedPayment = paymentRadios[i].value; break; } }
+        if (selectedPayment === 'Online Payment') {
+            var txnId = document.getElementById('transactionId').value.trim();
+            if (!txnId) { alert('Please enter your transaction ID.'); return; }
+            selectedPayment = 'Online Payment (TXN: ' + txnId + ')';
+        }
+        document.getElementById('hiddenCustomerName').value = nameVal;
+        document.getElementById('hiddenCustomerPhone').value = phoneVal;
+        document.getElementById('hiddenCustomerAddress').value = addressVal;
+        document.getElementById('hiddenPaymentMethod').value = selectedPayment;
+        document.getElementById('resName').innerText = nameVal;
+        document.getElementById('resAddress').innerText = addressVal;
+        document.getElementById('resPayment').innerText = selectedPayment;
+        document.getElementById('modal-step-inputs').style.display = 'none';
+        document.getElementById('modal-step-success').style.display = 'block';
+    }
+    function dispatchFormToServer() {
+       
+        window._blockRefresh = true;
+
+        var form = document.getElementById('checkoutForm');
+        var formData = new FormData(form);
+        var searchParams = new URLSearchParams();
+        for (var pair of formData) { searchParams.append(pair[0], pair[1]); }
+
+        fetch(form.action, {
+            method: 'POST',
+            body: searchParams,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept': 'application/json'
+            }
+        })
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+            if (data.success) {
+                closeCheckoutModal();
+                window.location.href = "/checkout-success";
+            } else {
+                alert(data.message || "Something went wrong.");
+            }
+        })
+        .catch(function(err) {
+           
+            console.log("Navigating to success page...");
+            window.location.href = "/checkout-success";
+        });
+    }
+</script>
+
+<%- include('partials/footer') %>

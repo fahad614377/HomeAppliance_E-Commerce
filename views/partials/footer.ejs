@@ -1,0 +1,54 @@
+  
+    <footer class="main-footer">
+     
+        &copy; Tawhidur Rahman  &bull; Roll:1295370<br>
+        IsDB-BISEW IT Scholarship Programme.
+       
+        
+    </footer>
+
+
+    <script>
+      
+      var wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+      var socket = new WebSocket(wsProtocol + window.location.host);
+
+     
+      socket.onmessage = function(event) {
+        var data = JSON.parse(event.data);
+
+       
+        if (data.type === 'REFRESH_DATA') {
+          if (window._blockRefresh) {
+            console.log('Refresh blocked during checkout.');
+            return;
+          }
+          console.log('Product data changed. Reloading page...');
+          window.location.reload();
+        }
+      };
+
+     
+      $(document).ready(function() {
+       
+        $.get('/api/cart', function(data) {
+          var totalItems = 0;
+          if (data.cart && data.cart.length > 0) {
+            data.cart.forEach(function(item) {
+              totalItems += item.quantity;
+            });
+          }
+          $('#navCartBadge').text(totalItems);
+        });
+
+       
+        $('a[href="/"]').on('click', function() {
+          var sidebar = document.getElementById('sidebarCart');
+          if (sidebar && sidebar.classList.contains('open')) {
+            sidebar.classList.remove('open');
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

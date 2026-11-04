@@ -1,0 +1,32 @@
+<%- include('partials/header') %>
+
+<div style="display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 130px); background: linear-gradient(180deg, #eff6ff 0%, var(--bg-page) 50%);">
+    <div style="background: var(--bg-card); padding: 44px; border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); max-width: 420px; width: 100%; border: 1px solid var(--border);">
+        <div style="text-align: center; margin-bottom: 32px;">
+            <div style="width: 56px; height: 56px; background: linear-gradient(135deg, var(--accent), #8b5cf6); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 1.5rem; color: white;">&#128274;</div>
+            <h2 style="margin: 0; font-size: 1.6rem; font-weight: 900; border: none; padding: 0; letter-spacing: -0.5px;">Welcome Back</h2>
+            <p style="color: var(--text-secondary); margin-top: 6px; font-size: 0.88rem;">Sign in to your HomeNest account</p>
+        </div>
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div style="background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: 12px 16px; border-radius: var(--radius-sm); margin-bottom: 20px; font-size: 0.88rem; text-align: center; font-weight: 600;"><%= error %></div>
+        <% } %>
+        <form action="/login" method="POST">
+            <input type="hidden" name="redirectTo" value="<%= typeof redirectTo !== 'undefined' ? redirectTo : '' %>">
+            <div style="margin-bottom: 16px;">
+                <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.8px;">Username</label>
+                <input type="text" name="username" placeholder="Enter your username" required style="width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 0.92rem; outline: none; box-sizing: border-box; font-family: inherit; transition: border-color var(--transition), box-shadow var(--transition);" onfocus="this.style.borderColor='var(--accent)'; this.style.boxShadow='0 0 0 3px rgba(59,130,246,0.1)'" onblur="this.style.borderColor='var(--border)'; this.style.boxShadow='none'">
+            </div>
+            <div style="margin-bottom: 24px;">
+                <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.8px;">Password</label>
+                <input type="password" name="password" placeholder="Enter your password" required style="width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 0.92rem; outline: none; box-sizing: border-box; font-family: inherit; transition: border-color var(--transition), box-shadow var(--transition);" onfocus="this.style.borderColor='var(--accent)'; this.style.boxShadow='0 0 0 3px rgba(59,130,246,0.1)'" onblur="this.style.borderColor='var(--border)'; this.style.boxShadow='none'">
+            </div>
+            <button type="submit" style="background: linear-gradient(135deg, var(--accent), var(--accent-hover)); color: white; border: none; padding: 14px; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.92rem; width: 100%; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 14px rgba(59,130,246,0.3); transition: all var(--transition);" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">Sign In</button>
+        </form>
+        <div style="text-align: center; font-size: 0.88rem; margin-top: 22px;">
+            <span style="color: var(--text-muted);">Don't have an account?</span>
+            <a href="/register" style="color: var(--accent); font-weight: 700; margin-left: 4px;">Sign Up</a>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

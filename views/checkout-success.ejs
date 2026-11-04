@@ -1,0 +1,83 @@
+<%- include('partials/header') %>
+
+<div style="display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 130px); padding: 24px; background: linear-gradient(180deg, #ecfdf5 0%, var(--bg-page) 50%);">
+    <div style="background: var(--bg-card); padding: 48px 44px; border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); max-width: 560px; width: 100%; border: 1px solid var(--border); text-align: center;">
+        
+   
+        <div style="margin: 0 auto 28px auto; width: 80px; height: 80px; background: linear-gradient(135deg, #d1fae5, #a7f3d0); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 20px rgba(16,185,129,0.2);">
+            <span style="font-size: 2.5rem; color: var(--success);">&#10003;</span>
+        </div>
+
+        <h2 style="margin: 0 0 8px 0; color: var(--text-primary); font-size: 1.8rem; font-weight: 900; border: none; padding: 0; letter-spacing: -0.8px;">
+            Order Placed!
+        </h2>
+        <p style="color: var(--text-secondary); margin: 0 0 28px 0; font-size: 0.95rem; line-height: 1.6;">
+            Thank you for shopping at HomeNest.<br />Your order will be processed shortly.
+        </p>
+
+        <% if (typeof lastOrder !== 'undefined' && lastOrder) { %>
+        
+            <div style="background: var(--border-light); border-radius: var(--radius-md); padding: 24px; border: 1px solid var(--border); margin-bottom: 24px; text-align: left;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px dashed var(--border);">
+                    <h4 style="margin: 0; font-size: 0.9rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.3px;">Order Summary</h4>
+                    <span style="font-family: monospace; font-size: 0.75rem; color: var(--accent); background: #eff6ff; padding: 4px 10px; border-radius: 6px; font-weight: 600;"><%= lastOrder.orderId %></span>
+                </div>
+                <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 2;">
+                    <div><strong style="color: var(--text-primary);">Customer:</strong> <%= lastOrder.customerName %></div>
+                    <div><strong style="color: var(--text-primary);">Phone:</strong> <%= lastOrder.customerPhone %></div>
+                    <div><strong style="color: var(--text-primary);">Address:</strong> <%= lastOrder.customerAddress %></div>
+                    <div>
+                        <strong style="color: var(--text-primary);">Payment:</strong>
+                        <% if (lastOrder.paymentMethod && lastOrder.paymentMethod.includes('Online')) { %>
+                            <span class="badge-payment badge-online"><%= lastOrder.paymentMethod %></span>
+                        <% } else { %>
+                            <span class="badge-payment badge-cod"><%= lastOrder.paymentMethod %></span>
+                        <% } %>
+                    </div>
+                </div>
+
+              
+                <div style="margin-top: 14px; border-top: 1px solid var(--border); padding-top: 12px;">
+                    <% lastOrder.items.forEach(function(item) { %>
+                        <div style="display: flex; justify-content: space-between; padding: 5px 0; font-size: 0.85rem; color: var(--text-primary);">
+                            <span><%= item.name %> &times;<%= item.quantity %></span>
+                            <span style="font-weight: 700;">BDT <%= item.total.toFixed(2) %></span>
+                        </div>
+                    <% }) %>
+                </div>
+
+            
+                <div style="display: flex; justify-content: space-between; margin-top: 12px; padding-top: 12px; border-top: 2px solid var(--border); font-size: 1.05rem;">
+                    <strong style="color: var(--text-primary);">Grand Total</strong>
+                    <strong style="color: var(--accent); font-size: 1.15rem; letter-spacing: -0.5px;">BDT <%= lastOrder.grandTotal.toFixed(2) %></strong>
+                </div>
+            </div>
+
+          
+            <a href="/invoice/download" style="display: flex; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; padding: 15px 24px; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 16px rgba(220,38,38,0.3); margin-bottom: 18px; transition: all var(--transition);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 22px rgba(220,38,38,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 16px rgba(220,38,38,0.3)'">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download Invoice (PDF)
+            </a>
+        <% } %>
+
+        <hr style="border: 0; border-top: 1px solid var(--border); margin-bottom: 22px;" />
+
+     
+        <div style="display: flex; gap: 14px;">
+            <a href="/" style="flex: 1; background: linear-gradient(135deg, var(--accent), var(--accent-hover)); color: white; padding: 14px; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.88rem; text-align: center; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 14px rgba(59,130,246,0.3); transition: all var(--transition);">
+                Continue Shopping
+            </a>
+            <a href="/logout" style="flex: 1; background: var(--bg-card); color: var(--text-secondary); padding: 14px; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.88rem; text-align: center; border: 1.5px solid var(--border); text-transform: uppercase; letter-spacing: 0.5px; transition: all var(--transition);" onmouseover="this.style.background='var(--border-light)'" onmouseout="this.style.background='var(--bg-card)'">
+                Log Out
+            </a>
+        </div>
+
+        <% if (typeof user !== 'undefined' && user && (user.role === 'admin' || user.username.toLowerCase() === 'admin')) { %>
+            <div style="margin-top: 22px;">
+                <a href="/sales" style="color: var(--text-muted); font-size: 0.82rem; font-weight: 500;">View Sales Log &rarr;</a>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

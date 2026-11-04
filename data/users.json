@@ -1,0 +1,32 @@
+[
+  {
+    "id": "USR-1781416204224",
+    "username": "admin",
+    "password": "123456",
+    "fullName": "zxz",
+    "phone": "154",
+    "address": "xc",
+    "role": "admin",
+    "createdAt": "2026-06-14T05:50:04.224Z"
+  },
+  {
+    "id": "USR-1781416319804",
+    "username": "fahad",
+    "password": "123456",
+    "fullName": "ddd",
+    "phone": "444",
+    "address": "sczxc",
+    "role": "customer",
+    "createdAt": "2026-06-14T05:51:59.804Z"
+  },
+  {
+    "id": "USR-1781496586954",
+    "username": "hasan",
+    "password": "123456",
+    "fullName": "asad",
+    "phone": "123",
+    "address": "sds",
+    "role": "customer",
+    "createdAt": "2026-06-15T04:09:46.954Z"
+  }
+]
